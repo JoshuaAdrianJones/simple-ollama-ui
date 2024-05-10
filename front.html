@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ollama Model Frontend</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 60em;
+            margin: 5em auto;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        textarea {
+            width: 90%;
+            padding: 1em;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+            margin-bottom: 1em;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #ccc;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        #response-l {
+            font-size: 18px;
+            color: #333;
+            text-align: left;
+        }
+
+        #response-m {
+            font-size: 18px;
+            color: #333;
+            text-align: left;
+        }
+
+        #response-w {
+            font-size: 18px;
+            color: #333;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Ollama Model Frontend</h1>
+        <div>
+            <h2>Enter your prompt Llama3</h2>
+            <!-- Use textarea for multiline input -->
+            <textarea id="prompt-l" rows="4" cols="50" placeholder="Why is the sky blue?"></textarea>
+            <div>
+                <button onclick="sendRequest('llama3:latest', 'response-l', 'prompt-l')">Send</button>
+            </div>
+            <hr>
+            <p id="response-l"></p>
+
+
+
+        </div>
+
+        <div>
+            <h2>Enter your prompt Mistral</h2>
+            <!-- Use textarea for multiline input -->
+            <textarea id="prompt-m" rows="4" cols="50" placeholder="Why is the sky blue?"></textarea>
+            <div>
+                <button onclick="sendRequest('mistral:latest', 'response-m', 'prompt-m')">Send</button>
+            </div>
+            <hr>
+            <p id="response-m"></p>
+
+
+
+        </div>
+        <div>
+            <h2>Enter your prompt wizardlm2</h2>
+            <!-- Use textarea for multiline input -->
+            <textarea id="prompt-w" rows="4" cols="50" placeholder="Why is the sky blue?"></textarea>
+            <div>
+                <button onclick="sendRequest('wizardlm2:latest', 'response-w', 'prompt-w')">Send</button>
+            </div>
+            <hr>
+            <p id="response-w"></p>
+
+
+
+        </div>
+
+
+
+    </div>
+
+    <script>
+        function sendRequest(model, response_id, prompt_id) {
+            const promptInput = document.getElementById(prompt_id).value;
+            const systemPrompt = ""
+            // Construct the request payload
+            const payload = {
+                model: model,
+                prompt: systemPrompt + ' ' + promptInput,
+                stream: false,
+                "options": {
+                    "num_ctx": 16384
+                },
+                temperature: 1
+            };
+
+            // Send the request to the Ollama API
+            fetch('http://localhost:11434/api/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Set the response text directly to the element
+                    document.getElementById(response_id).innerText = data.response;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    </script>
+</body>
+
+</html>
