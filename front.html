@@ -77,14 +77,27 @@
     <div class="container">
         <h1>Ollama Model Frontend</h1>
         <div>
-            <h2>Enter your prompt Llama3</h2>
+            <h2>Enter your prompt Llama3:instruct</h2>
             <!-- Use textarea for multiline input -->
             <textarea id="prompt-l" rows="4" cols="50" placeholder="Why is the sky blue?"></textarea>
             <div>
-                <button onclick="sendRequest('llama3:latest', 'response-l', 'prompt-l')">Send</button>
+                <button onclick="sendRequest('llama3:instruct', 'response-l', 'prompt-l')">Send</button>
             </div>
             <hr>
             <p id="response-l"></p>
+
+
+
+        </div>
+        <div>
+            <h2>Enter your prompt Llama3</h2>
+            <!-- Use textarea for multiline input -->
+            <textarea id="prompt-i" rows="4" cols="50" placeholder="Why is the sky blue?"></textarea>
+            <div>
+                <button onclick="sendRequest('llama3:latest', 'response-i', 'prompt-i')">Send</button>
+            </div>
+            <hr>
+            <p id="response-i"></p>
 
 
 
@@ -131,9 +144,16 @@
                 prompt: systemPrompt + ' ' + promptInput,
                 stream: false,
                 "options": {
-                    "num_ctx": 16384
+                    "num_predict": 1024,
+                    "n_ctx": 16384,
+                    "n_gpu_layers": 64,
+                    "n_threads": 12,
+                    "rope_freq_scale": 0.85,
+                    "rope_freq_base": 1000000,
+                    "temperature": 0.9,
+
                 },
-                temperature: 1
+
             };
 
             // Send the request to the Ollama API
